@@ -5,6 +5,7 @@ import "./index.scss";
 const logo = require("../../images/logo.jpg");
 
 const Home = () => {
+  
   return (
     <div className="box-center">
       <div>
