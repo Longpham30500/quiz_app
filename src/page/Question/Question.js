@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./question.scss";
 
 const Question = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const Question = () => {
   const getQuestion = async () => {
     try {
       const { data } = await axios.get("https://opentdb.com/api.php?amount=10");
+      localStorage.setItem("listQuestions", JSON.stringify(data.results));
+      localStorage.setItem("dataQuestions", JSON.stringify([]));
       setDataQuestions(data.results);
       setIsLoading(true);
     } catch (error) {}
@@ -47,12 +50,17 @@ const Question = () => {
     if (Object.values(color).length) {
       if (numQuestion === 9) {
         localStorage.setItem("totalTime", timeSpentOnPage);
-        localStorage.setItem("listQuestions", JSON.stringify(dataQuestions));
-        navigate("/congratulation");
       } else {
         setNumQuestion((prev) => ++prev);
       }
       setColor({});
+    }
+    if(storeQuestions.length >= 10) {
+      if(storeQuestions.filter(item => item.correctAnswer === true).length >=5) {
+        return navigate('/Completed')
+      } else {
+        return navigate('/Again')
+      }
     }
   };
 
@@ -70,41 +78,42 @@ const Question = () => {
   }, [isLoading]);
 
   return !isLoading ? (
-    <h1>isLoading...</h1>
+    <div style={{height:'100%', display:'flex', justifyContent:'center', alignItems:'center', color:'white'}}><h1>isLoading...</h1></div>
   ) : (
-    <div>
+    <div className="contain">
       {dataQuestions?.length > 0 &&
         [dataQuestions.at(numQuestion)].map((item, i) => {
           return (
-            <div key={i}>
+            <div key={i} className='content'>
               <h1>{item.question}</h1>
-              <h1
-                style={{ color: color.correctAnswer && "green" }}
-                onClick={() =>
-                  handleClickColor({ data: item, correctAnswer: true })
-                }>
-                {item.correct_answer}
-              </h1>
-
-              {item.incorrect_answers.map((data, index) => (
-                <h1
-                  key={index}
-                  style={{ color: color.incorrectAnswer === index && "red" }}
+              <div
+              className='answer'>
+                <h2
+                  style={{ color: color.correctAnswer && "green" }}
                   onClick={() =>
-                    handleClickColor({
-                      data: item,
-                      correctAnswer: false,
-                      index,
-                    })
+                    handleClickColor({ data: item, correctAnswer: true })
                   }>
-                  {data}
-                </h1>
-              ))}
+                  {item.correct_answer}
+                </h2>
+                {item.incorrect_answers.map((data, index) => (
+                  <h2
+                    key={index}
+                    style={{ color: color.incorrectAnswer === index && "red" }}
+                    onClick={() =>
+                      handleClickColor({
+                        data: item,
+                        correctAnswer: false,
+                        index,
+                      })
+                    }>
+                    {data}
+                  </h2>
+                ))}
+              </div>
             </div>
           );
         })}
-      Question
-      <button onClick={handleClickNext}>click</button>
+      <button onClick={handleClickNext}>Next</button>
     </div>
   );
 };

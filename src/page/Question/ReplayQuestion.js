@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./replayquestion.scss";
 
 const ReplayQuestion = () => {
   const navigate = useNavigate();
-  
+
   const listQuestions = JSON.parse(localStorage.getItem("listQuestions")) || [];
   const storeQuestions =
     JSON.parse(localStorage.getItem("dataQuestions")) || [];
@@ -19,42 +20,47 @@ const ReplayQuestion = () => {
   };
 
   return (
-    <div>
+    <div className="body">
       {listQuestions?.length > 0 &&
         [listQuestions.at(numQuestion)].map((item, i) => {
           return (
-            <div key={i}>
+            <div key={i} className="replay-content">
               <h1>{item.question}</h1>
-              <h1
-                style={{
-                  color:
-                    listQuestions.at(numQuestion).correct_answer ===
-                      storeQuestions.at(numQuestion).questionChoose && "green",
-                }}>
-                {item.correct_answer}
-              </h1>
-
-              {item.incorrect_answers.map((data, index) => (
-                <h1
-                  key={index}
+              <div className='replay-answer'>
+                <h2
                   style={{
                     color:
-                      storeQuestions.at(numQuestion).incorrectAnswer ===
-                        index && "red",
+                      listQuestions.at(numQuestion).correct_answer ===
+                        storeQuestions.at(numQuestion).questionChoose &&
+                      "green",
                   }}>
-                  {data}
-                </h1>
-              ))}
+                  {item.correct_answer}
+                </h2>
+
+                {item.incorrect_answers.map((data, index) => (
+                  <h2
+                    key={index}
+                    style={{
+                      color:
+                        storeQuestions.at(numQuestion).incorrectAnswer ===
+                          index && "red",
+                    }}>
+                    {data}
+                  </h2>
+                ))}
+              </div>
             </div>
           );
         })}
-      <button
-        onClick={() => {
-          if (numQuestion > 0) setNumQuestion((prev) => --prev);
-        }}>
-        back
-      </button>
-      <button onClick={handleClickNext}>next</button>
+      <div className='move-button'>
+        <button className="button back-button"
+          onClick={() => {
+            if (numQuestion > 0) setNumQuestion((prev) => --prev);
+          }}>
+          back
+        </button>
+        <button onClick={handleClickNext} className='button next-button'>next</button>
+      </div>
     </div>
   );
 };

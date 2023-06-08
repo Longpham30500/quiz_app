@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import replay from '../.././images/replay.png'
+import './congratulation.scss'
 
-const Congratulation = () => {
+const Again = () => {
   const navigate = useNavigate();
 
   const storeQuestions =
@@ -34,22 +36,25 @@ const Congratulation = () => {
   };
 
   return (
-    <div>
-      Congratulation
-      <h1>
-        Total: {storeQuestions.filter((item) => item.correctAnswer).length}/
-        {storeQuestions.length} correct answer in {secondsToHms(storeTime)}
-      </h1>
-      <button onClick={() => navigate("/replayQuestion")}>Xem lai</button>
-      <button
-        onClick={() => {
-          navigate("/");
-          localStorage.clear();
-        }}>
-        Play again
-      </button>
+    <div className="container">
+      <div className="notification-box">
+        <img src={replay}/>
+        <h1>Not pass</h1>
+        <h2>
+          Total: {storeQuestions.filter((item) => item.correctAnswer).length}/
+          {storeQuestions.length} correct answer in {secondsToHms(storeTime)}
+        </h2>
+        <button onClick={() => navigate("/replayQuestion")}>Review</button>
+        <button
+          onClick={() => {
+            navigate("/");
+            localStorage.clear();
+          }}>
+          Play again
+        </button>
+      </div>
     </div>
   );
 };
 
-export default Congratulation;
+export default Again;
